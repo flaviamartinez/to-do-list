@@ -5,41 +5,50 @@ const tareas = [
 ]
 
 const btn = document.querySelector("button")
-const input = document.getElementById("task")
+const input = document.getElementById("task-input")
 const taskCount = document.getElementById("task-count")
 const doneCount = document.getElementById("done-count")
-const elementosList = document.querySelector(".elementos")
+const tasksList = document.querySelector(".tasks")
 
 
-function generateID(arrayTareas) {
+function generateID(arrayTasks) {
 	let uniqueID;
 	let exist = true;
 	
 	while (exist) {
-	  uniqueID = Math.floor(Math.random() * 1000) + 1;
+	  uniqueID = Math.floor(Math.random() * 100) + 1;
 	  
-	  exist = arrayTareas.some(obj => obj.id === uniqueID);
+	  exist = arrayTasks.some(obj => obj.id === uniqueID);
 	}
 	
 	return uniqueID;
   }
 
 btn.addEventListener('click', () => {
-	tareas.push({ id: generateID(tareas), tarea: input.value, done: false})
-	renderTasks()
-} 
+	if (input.value.trim() != ''){
+		tareas.push({ id: generateID(tareas), tarea: input.value, done: false})
+	
+		renderTasks()
+	}
+}
 )
 
 function renderTasks(){
 	let html = ""
+
 	tareas.forEach(tarea => {
-		html += `<div class="elemento"><p>${tarea.id}</p>`
+		html += `<div class="task">`
+		html += `<p>${tarea.id}</p>`
 		html += `<p>${tarea.tarea}</p>`
-		html += `<input type="checkbox" class="task-checkbox" data-id="${tarea.id}" ${tarea.done ? "checked" : ''}>`
-		html += `<button class="task-btn" data-id="${tarea.id}">Eliminar</button></div>`
+		html += `<div class="modify-task">
+				<input type="checkbox" class="task-checkbox" data-id="${tarea.id}" ${tarea.done ? "checked" : ''}>
+				<button class="task-btn" data-id="${tarea.id}">Eliminar</button>
+			</div>`
+		html += `</div>`
+
 	})
 
-	elementosList.innerHTML = html
+	tasksList.innerHTML = html
 
 	attachCheckboxEvents()
 
