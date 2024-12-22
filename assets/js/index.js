@@ -6,10 +6,10 @@ const tareas = [
 
 const btn = document.querySelector("button")
 const input = document.getElementById("task")
-const idList = document.getElementById("id-list")
-const taskList = document.getElementById("task-list")
 const taskCount = document.getElementById("task-count")
 const doneCount = document.getElementById("done-count")
+const elementosList = document.querySelector(".elementos")
+
 
 function generateID(arrayTareas) {
 	let uniqueID;
@@ -18,7 +18,6 @@ function generateID(arrayTareas) {
 	while (exist) {
 	  uniqueID = Math.floor(Math.random() * 1000) + 1;
 	  
-	  // Verificamos si el ID existe
 	  exist = arrayTareas.some(obj => obj.id === uniqueID);
 	}
 	
@@ -26,25 +25,71 @@ function generateID(arrayTareas) {
   }
 
 btn.addEventListener('click', () => {
-	tareas.push({ id: generateID(tareas), tarea: input.value})
-	mostrar()
+	tareas.push({ id: generateID(tareas), tarea: input.value, done: false})
+	renderTasks()
 } 
 )
 
-function mostrar(){
-	let idHTML = ""
-	let taskHTML = ""
-
+function renderTasks(){
+	let html = ""
 	tareas.forEach(tarea => {
-		idHTML += `<li>${tarea.id}</li>`
-		taskHTML += `<li>${tarea.tarea}</li>`
+		html += `<div class="elemento"><p>${tarea.id}</p>`
+		html += `<p>${tarea.tarea}</p>`
+		html += `<input type="checkbox" class="task-checkbox" data-id="${tarea.id}">`
+		html += `<button class="task-btn" data-id="${tarea.id}">Eliminar</button></div>`
 	})
 
-	idList.innerHTML = idHTML
-	taskList.innerHTML = taskHTML
+	elementosList.innerHTML = html
+
+	attachCheckboxEvents()
+
+	attachBtnEvents()
 
 	taskCount.innerHTML = `Total: ${tareas.length}`
 	doneCount.innerHTML = `Realizadas: ${tareas.filter(obj => obj.done === true).length}`
+
 }
 
-mostrar()
+
+function attachCheckboxEvents() {
+	const checkboxes = document.querySelectorAll('.task-checkbox');
+	
+	checkboxes.forEach(checkbox => {
+	  checkbox.addEventListener('change', (c => {
+		const taskId = Number(c.target.dataset.id);
+  
+		const taskSelected = tareas.find(tarea => tarea.id === taskId);
+  
+		if (taskSelected) {
+		  taskSelected.done = c.target.checked;
+		  console.log(taskSelected)
+		}
+
+		doneCount.innerHTML = `Realizadas: ${tareas.filter(obj => obj.done === true).length}`
+	  })
+	)
+	})
+}
+
+function attachBtnEvents() {
+	const taskBtn = document.querySelectorAll(".task-btn")
+
+	taskBtn.forEach(button => {
+		button.addEventListener('click', (b => {
+			const taskID = Number(b.target.dataset.id)
+
+			const index = tareas.findIndex(tarea => tarea.id === taskID)
+
+			tareas.splice(index, 1)
+
+			console.log(tareas)
+
+			taskCount.innerHTML = `Total: ${tareas.length}`
+		}))
+	}
+
+	)
+}
+
+renderTasks()
+
