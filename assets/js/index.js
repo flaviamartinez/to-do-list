@@ -35,7 +35,7 @@ function renderTasks(){
 	tareas.forEach(tarea => {
 		html += `<div class="elemento"><p>${tarea.id}</p>`
 		html += `<p>${tarea.tarea}</p>`
-		html += `<input type="checkbox" class="task-checkbox" data-id="${tarea.id}">`
+		html += `<input type="checkbox" class="task-checkbox" data-id="${tarea.id}" ${tarea.done ? "checked" : ''}>`
 		html += `<button class="task-btn" data-id="${tarea.id}">Eliminar</button></div>`
 	})
 
@@ -82,9 +82,7 @@ function attachBtnEvents() {
 
 			tareas.splice(index, 1)
 
-			console.log(tareas)
-
-			taskCount.innerHTML = `Total: ${tareas.length}`
+			renderTasks()
 		}))
 	}
 
